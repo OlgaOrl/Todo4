@@ -1,0 +1,180 @@
+openapi: 3.0.3
+info:
+  title: ToDo App API
+  version: "1.0.0"
+  description: API for managing tasks in the ToDo application.
+servers:
+  - url: http://localhost:3000
+paths:
+  /todos:
+    get:
+      summary: Get list of tasks
+      tags:
+        - ToDo
+      responses:
+        '200':
+          description: Successful response. Returns an array of tasks.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Todo'
+    post:
+      summary: Create a new task
+      tags:
+        - ToDo
+      requestBody:
+        description: Task object to be created.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoInput'
+      responses:
+        '201':
+          description: Task successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '400':
+          description: Invalid input.
+  /todos/{todoId}:
+    get:
+      summary: Retrieve a task by ID
+      tags:
+        - ToDo
+      parameters:
+        - in: path
+          name: todoId
+          required: true
+          schema:
+            type: integer
+          description: Task ID.
+      responses:
+        '200':
+          description: Task details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '404':
+          description: Task not found.
+    put:
+      summary: Update a task by ID (replace entire task)
+      tags:
+        - ToDo
+      parameters:
+        - in: path
+          name: todoId
+          required: true
+          schema:
+            type: integer
+          description: Task ID to update.
+      requestBody:
+        description: Updated task object.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoInput'
+      responses:
+        '200':
+          description: Task successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '400':
+          description: Invalid input.
+        '404':
+          description: Task not found.
+    patch:
+      summary: Partially update a task by ID
+      tags:
+        - ToDo
+      parameters:
+        - in: path
+          name: todoId
+          required: true
+          schema:
+            type: integer
+          description: Task ID to partially update.
+      requestBody:
+        description: Partial task update.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoPatch'
+      responses:
+        '200':
+          description: Task partially updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '400':
+          description: Invalid input.
+        '404':
+          description: Task not found.
+    delete:
+      summary: Delete a task by ID
+      tags:
+        - ToDo
+      parameters:
+        - in: path
+          name: todoId
+          required: true
+          schema:
+            type: integer
+          description: Task ID to delete.
+      responses:
+        '204':
+          description: Task successfully deleted.
+        '404':
+          description: Task not found.
+components:
+  schemas:
+    Todo:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Buy groceries"
+        description:
+          type: string
+          example: "Milk, bread, eggs"
+        completed:
+          type: boolean
+          example: false
+    TodoInput:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Buy groceries"
+        description:
+          type: string
+          example: "Milk, bread, eggs"
+        completed:
+          type: boolean
+          example: false
+      required:
+        - title
+    TodoPatch:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Buy groceries"
+        description:
+          type: string
+          example: "Milk, bread, eggs"
+        completed:
+          type: boolean
+          example: false
